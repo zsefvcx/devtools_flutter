@@ -76,20 +76,21 @@ class BDStudents {
     _data.clear();
     //_currentPage = page;
     for (var key in json.keys) {
-      var val = json[key];
-      if(val == null){
+
+      var student = json[key];
+      if(student == null){
         throw('Error json recognize. Value for key:$key is empty!');
-      } else if (val is Map<String, dynamic>) {
-        _data[key] = Student.fromJson(val);
+      } else if (student is Map<String, dynamic>) {
+        _data[key] = Student.fromJson(student);
       } else {
-        throw('Error json recognize. Value for key:$key is not Map<String, dynamic>! :${val.runtimeType}:$val');
+        throw('Error json recognize. Value for key:$key is not Map<String, dynamic>! :${student.runtimeType}:$student');
       }
     }
   }
 
   /// to the `toJson` method.
-  Map<String, dynamic> toJson() {
-    Map<String, dynamic> result = {};
+  Map<String, Map<String, dynamic>> toJson() {
+    Map<String, Map<String, dynamic>> result = {};
     for(var key in _data.keys){
       var student = _data[key];
       if (student == null){
