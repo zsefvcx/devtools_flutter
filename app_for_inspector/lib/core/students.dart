@@ -35,7 +35,7 @@ class BDStudents {
       if(val == valBD){
         return 1;//есть такой элемент и он такойже в базе и делать ничего не будем
       } else {
-        data[key] = valBD.copyWith(//заменяем в базе как то так...
+        data[key] = valBD.copyWith(//заменяем в базе, как то так...
                     id: val.id          ==valBD.id          ?null:val.id,
               lastName: val.lastName    ==valBD.lastName    ?null:val.lastName,
                   name: val.name        ==valBD.name        ?null:val.name,
