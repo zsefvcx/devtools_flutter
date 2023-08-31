@@ -9,11 +9,21 @@ class BDStudents {
   ///Число студенто в базе
   int get len => _data.length;
 
+  ///Число активистов в базе
+  int get lenAct => _data.values.fold<int>(0, (previousValue, vol) => vol.activist?previousValue=previousValue+1:previousValue);
+
+  ///только ключи активистов
+  String? keyAct(int i) => _data.keys.toList()[i];
+
+  ///Получим ключ по списку
+  String? key(int i) => _data.keys.toList()[i];
+
   ///Читаем из базы
-  Student? gId(int id) => _data[id];
+  Student? gId(String key) => key=='FFFF'?null:_data[key];
 
   ///Добавляем в базу
   bool add({required String key, required Student val}) {
+    if(key=='FFFF') return false;//запрещенно
     Student? valBD =  _data[key];
     if( valBD == null) {
       _data[key] = val;//добавляем
@@ -25,8 +35,9 @@ class BDStudents {
 
   ///Удаляем из базы
   bool rem({required String key}){
-    Student? valBD =  _data[key];
-    if( valBD == null) {
+    if(key=='FFFF') return false;//запрещенно
+    Student? val =  _data[key];
+    if( val == null) {
       return false;//такого нет
     } else {
       _data.remove(key);
@@ -36,6 +47,7 @@ class BDStudents {
 
   ///Меняем в базе
   int mod({required String key, required Student val}){
+    if(key=='FFFF') return -2;//запрещенно
     Student? valBD =  _data[key];
     if( valBD == null) {
       return -1;//такого нет в базу и добавлять не будем
@@ -54,6 +66,7 @@ class BDStudents {
           group: val.group       ==valBD.group       ?null:val.group,
           activist: val.activist    ==valBD.activist    ?null:val.activist,
         );
+
         return 0;//поменяли
       }
     }
@@ -76,7 +89,7 @@ class BDStudents {
     _data.clear();
     //_currentPage = page;
     for (var key in json.keys) {
-
+      if(key == 'FFFF') continue;
       var student = json[key];
       if(student == null){
         throw('Error json recognize. Value for key:$key is empty!');
