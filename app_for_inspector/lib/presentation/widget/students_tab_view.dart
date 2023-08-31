@@ -18,6 +18,7 @@ class StudentsTabView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final List<String> keyMarkers = BDStudents.instance().getKeysAct(activistOnly: _activistOnly);
     return Column(
       mainAxisAlignment: MainAxisAlignment.center,
       children: <Widget>[
@@ -39,10 +40,8 @@ class StudentsTabView extends StatelessWidget {
               crossAxisCount: 2,
               shrinkWrap: true,
               children: List.generate(
-                   _activistOnly?BDStudents.instance().lenAct: BDStudents.instance().len,
+                  keyMarkers.length,
                     (i) {
-                    final List<String> keyMarkers = BDStudents.instance().getKeysAct(activistOnly: _activistOnly);
-
                   String keyMarker = keyMarkers[i];
                   Student? students = BDStudents.instance().gId(keyMarker);
                   if (students != null) {

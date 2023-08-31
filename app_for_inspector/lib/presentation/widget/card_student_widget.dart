@@ -29,37 +29,45 @@ class CardStudentWidget extends StatelessWidget {
           children: [
             Expanded(
               flex: 2,
-              child: SizedBox(
-                width: double.infinity,
-                child: ValueListenableBuilder<bool>(
-                  valueListenable:  activistNotifier,
-                  builder: (_, value, __) => !activistOnly?buildImage(): value?buildImage():const Center(child: Text('Removed from activist')),
+              child: Stack(
+                children: [
+                  SizedBox(
+                    width: double.infinity,
+                    child: ValueListenableBuilder<bool>(
+                      valueListenable:  activistNotifier,
+                      builder: (_, value, __) => !activistOnly?buildImage(): value?buildImage():const Center(child: Text('Removed from activist')),
+                    ),
+                  ),
+                  Text('GPA: ${student.averageScore}', style: TextStyle(backgroundColor: Colors.white)),
+                ],
+              ),
+            ),
+            Expanded(
+              child: Padding(
+                padding: const EdgeInsets.fromLTRB(8, 0, 8, 0),
+                child: Column(
+                  children: [
+                    Text('${student.lastName} ${student.name} ${student.secondName}' ),
+                    ElevatedButton(
+                      style: ButtonStyle(
+                        fixedSize: MaterialStateProperty.all(const Size(180,25)),
+                      ),
+                      onPressed: (){
+                        activistNotifier.value = !activistNotifier.value;
+                        int res = BDStudents.instance().mod(key: keyMarker, val: student.copyWith(activist: activistNotifier.value));
+                        Logger.print('Change status a students ${BDStudents.instance().gId(keyMarker)} with result:$res ', level: 0, name: 'test');
+                      },
+                      child: ValueListenableBuilder<bool>(
+                        valueListenable:  activistNotifier,
+                        builder: (_, value, __) => value
+                            ?const Text('Delete from Activist')
+                            :const Text('Make Activist'),
+                      ),
+                    ),
+                  ],
                 ),
-
               ),
             ),
-            Padding(
-              padding: const EdgeInsets.all(8.0),
-              child: Text('Full name: ${student.lastName} ${student.name} ${student.secondName}' ),
-            ),
-            Padding(
-              padding: const EdgeInsets.all(8.0),
-              child: Text('GPA: ${student.averageScore}' ),
-            ),
-            Padding(
-              padding: const EdgeInsets.all(8.0),
-              child: ElevatedButton(onPressed: (){
-                activistNotifier.value = !activistNotifier.value;
-                int res = BDStudents.instance().mod(key: keyMarker, val: student.copyWith(activist: activistNotifier.value));
-                Logger.print('Change status a students ${BDStudents.instance().gId(keyMarker)} with result:$res ', level: 0, name: 'test');
-              }, child: ValueListenableBuilder<bool>(
-                valueListenable:  activistNotifier,
-                builder: (_, value, __) => value
-                    ?const Text('Remove from activist')
-                    :const Text('Make an Activist'),
-              ),
-              ),
-            )
           ],
         ),
       ),
