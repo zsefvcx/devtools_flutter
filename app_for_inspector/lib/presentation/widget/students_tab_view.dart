@@ -41,11 +41,13 @@ class StudentsTabView extends StatelessWidget {
               children: List.generate(
                    _activistOnly?BDStudents.instance().lenAct: BDStudents.instance().len,
                     (i) {
-                  String keyMarker = BDStudents.instance().key(i)??'FFFF';
+                    final List<String> keyMarkers = BDStudents.instance().getKeysAct(activistOnly: _activistOnly);
+
+                  String keyMarker = keyMarkers[i];
                   Student? students = BDStudents.instance().gId(keyMarker);
                   if (students != null) {
                     return CardStudentWidget(
-                      student: students, keyMarker: keyMarker,);
+                      student: students, keyMarker: keyMarker, activistOnly: _activistOnly,);
                   } else {
                     throw('Error db students!');
                   }

@@ -10,12 +10,21 @@ class BDStudents {
   int get len => _data.length;
 
   ///Число активистов в базе
-  int get lenAct => _data.values.fold<int>(0, (previousValue, vol) => vol.activist?previousValue=previousValue+1:previousValue);
+  int get lenAct => _data.values.fold<int>(0, (previousValue, val) => val.activist?previousValue=previousValue+1:previousValue);
 
+  ///Получим ключи по списку или
   ///только ключи активистов
-  String? keyAct(int i) => _data.keys.toList()[i];
+  List<String> getKeysAct({bool activistOnly=false}) {
+    if(!activistOnly) {
+      return _data.keys.toList();
+    } else {
+      List<String> keys = [];
+      _data.forEach((key, val) {if(val.activist)keys.add(key);});
+      return keys;
+    }
+  }
 
-  ///Получим ключ по списку
+
   String? key(int i) => _data.keys.toList()[i];
 
   ///Читаем из базы

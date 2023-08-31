@@ -1,4 +1,6 @@
 
+import 'dart:ui';
+
 import 'package:flutter/material.dart';
 
 import '../../core/core.dart';
@@ -9,10 +11,14 @@ class CardStudentWidget extends StatelessWidget {
     super.key,
     required this.student,
     required this.keyMarker,
+    this.activistOnly = false,
   });
 
   final String keyMarker;
   final Student student;
+  final bool activistOnly;
+
+
 
   @override
   Widget build(BuildContext context) {
@@ -25,10 +31,11 @@ class CardStudentWidget extends StatelessWidget {
               flex: 2,
               child: SizedBox(
                 width: double.infinity,
-                child: Image.asset(
-                  'assets/images/${student.image}',
-                  fit: BoxFit.cover,
+                child: ValueListenableBuilder<bool>(
+                  valueListenable:  activistNotifier,
+                  builder: (_, value, __) => !activistOnly?buildImage(): value?buildImage():const Center(child: Text('Removed from activist')),
                 ),
+
               ),
             ),
             Padding(
@@ -56,6 +63,13 @@ class CardStudentWidget extends StatelessWidget {
           ],
         ),
       ),
+    );
+  }
+
+  Image buildImage() {
+    return Image.asset(
+      'assets/images/${student.image}',
+      fit: BoxFit.cover,
     );
   }
 }
