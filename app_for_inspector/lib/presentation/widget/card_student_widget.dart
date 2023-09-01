@@ -1,6 +1,4 @@
 
-import 'dart:ui';
-
 import 'package:flutter/material.dart';
 
 import '../../core/core.dart';
@@ -35,10 +33,13 @@ class CardStudentWidget extends StatelessWidget {
                     width: double.infinity,
                     child: ValueListenableBuilder<bool>(
                       valueListenable:  activistNotifier,
-                      builder: (_, value, __) => !activistOnly?buildImage(): value?buildImage():const Center(child: Text('Removed from activist')),
+                      builder: (_, value, __) => !activistOnly?BuildImage(image: student.image,): value?BuildImage(image: student.image,):const Center(child: Text('Removed from activist list!')),
                     ),
                   ),
-                  Text('GPA: ${student.averageScore}', style: TextStyle(backgroundColor: Colors.white)),
+                  Text('GPA: ${student.averageScore}', style: TextStyle(
+                      backgroundColor: Colors.white.withOpacity(0.6)),
+
+                  ),
                 ],
               ),
             ),
@@ -48,20 +49,22 @@ class CardStudentWidget extends StatelessWidget {
                 child: Column(
                   children: [
                     Text('${student.lastName} ${student.name} ${student.secondName}' ),
-                    ElevatedButton(
-                      style: ButtonStyle(
-                        fixedSize: MaterialStateProperty.all(const Size(180,25)),
-                      ),
-                      onPressed: (){
-                        activistNotifier.value = !activistNotifier.value;
-                        int res = BDStudents.instance().mod(key: keyMarker, val: student.copyWith(activist: activistNotifier.value));
-                        Logger.print('Change status a students ${BDStudents.instance().gId(keyMarker)} with result:$res ', level: 0, name: 'test');
-                      },
-                      child: ValueListenableBuilder<bool>(
-                        valueListenable:  activistNotifier,
-                        builder: (_, value, __) => value
-                            ?const Text('Delete from Activist')
-                            :const Text('Make Activist'),
+                    Expanded(
+                      child: IconButton(
+                        style: ButtonStyle(
+                          mouseCursor: MaterialStateProperty.all(SystemMouseCursors.click),
+                        ),
+                        onPressed: (){
+                          activistNotifier.value = !activistNotifier.value;
+                          int res = BDStudents.instance().mod(key: keyMarker, val: student.copyWith(activist: activistNotifier.value));
+                          Logger.print('Change status a students ${BDStudents.instance().gId(keyMarker)} with result:$res ', level: 0, name: 'test');
+                        },
+                        icon: ValueListenableBuilder<bool>(
+                          valueListenable:  activistNotifier,
+                          builder: (_, value, __) => value
+                              ?const Text('Delete from Activist')
+                              :const Text('Make Activist'),
+                        ),
                       ),
                     ),
                   ],
@@ -74,9 +77,23 @@ class CardStudentWidget extends StatelessWidget {
     );
   }
 
-  Image buildImage() {
+  // Image buildImage() {
+  //   return Image.asset(
+  //     'assets/images_lite/${student.image}',
+  //     fit: BoxFit.cover,
+  //   );
+  // }
+}
+
+class BuildImage extends StatelessWidget {
+  const BuildImage({super.key, required this.image});
+
+  final String image;
+
+  @override
+  Widget build(BuildContext context) {
     return Image.asset(
-      'assets/images/${student.image}',
+      'assets/images_lite/$image',
       fit: BoxFit.cover,
     );
   }

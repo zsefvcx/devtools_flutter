@@ -1,14 +1,17 @@
 
+import 'dart:async';
 import 'dart:convert';
+
 
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
 import '../core/core.dart';
-import '../core/logger.dart';
 import '../domain/domain.dart';
+import 'network.dart';
 import 'widget/widgets.dart';
 
+final List<Student> leakStudents = [];
 
 class MyHomePage extends StatefulWidget {
   const MyHomePage({super.key, required this.title});
@@ -21,6 +24,7 @@ class MyHomePage extends StatefulWidget {
 
 class _MyHomePageState extends State<MyHomePage> with TickerProviderStateMixin{
   late TabController _tabController;
+
   int _currentTabIndex = 0;
 
   bool _isLoading = false;
@@ -77,7 +81,6 @@ class _MyHomePageState extends State<MyHomePage> with TickerProviderStateMixin{
     rdb();
   }
 
-
   @override
   void dispose() {
     _tabController.dispose();
@@ -90,7 +93,15 @@ class _MyHomePageState extends State<MyHomePage> with TickerProviderStateMixin{
       appBar: AppBar(
         centerTitle: true,
         backgroundColor: Theme.of(context).colorScheme.inversePrimary,
-        title: Text(widget.title),
+        title: Row(
+          children: [
+            Text(widget.title),
+            Visibility(
+              visible: Settings.httpGet,
+                child: const NetworkStatusCaption(),
+            ),
+          ],
+        ),
       ),
       bottomNavigationBar: BottomNavigationBar(
         onTap: (currentIndex) {
@@ -123,10 +134,29 @@ class _MyHomePageState extends State<MyHomePage> with TickerProviderStateMixin{
       ),
       floatingActionButton: FloatingActionButton(
         onPressed: () => setState(() {
-          //rdb();
+          rdb();
+          ///Добавим утечку памяти по кнопке
+          int id = 0;
+          leakStudents.clear();
+          while (leakStudents.length < 10000000) {
+            id++;
+            leakStudents.add(
+              Student(
+                  id: id,
+                  lastName: 'lastName',
+                  name: 'name',
+                  secondName: 'secondName',
+                  image: 'image',
+                  averageScore: 5,
+                  age: 21,
+                  group: 4,
+                  activist: false),
+            );
+          }
+          Logger.print('Memory leak ${leakStudents.length}', level: 0, name: 'test');
           Logger.print('Press floatingActionButton and setState', level: 0, name: 'test');
         }),
-        tooltip: 'setState',
+        tooltip: 'setState and read from db',
         child: const Icon(Icons.update),
 
       ),

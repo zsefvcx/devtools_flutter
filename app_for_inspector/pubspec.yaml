@@ -14,7 +14,7 @@ dependencies:
   equatable: ^2.0.5
   cupertino_icons: ^1.0.2
   json_annotation: ^4.8.1
-  blurhash: ^1.1.1
+  dio: ^5.3.2
 
 dev_dependencies:
   flutter_test:
@@ -30,6 +30,7 @@ flutter:
   assets:
     - assets/
     - assets/images/
+    - assets/images_lite/
   # example:
   # fonts:
   #   - family: Schyler
